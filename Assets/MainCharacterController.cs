@@ -19,7 +19,7 @@ public class MainCharacterController : MonoBehaviour
     Vector2 rawMovementInput;
     Vector3 groundMoveDirection;
     Vector3 lookDirection;
-    [SerializeField] BoxCollider collider;
+    [SerializeField] Collider collider;
     public Rigidbody rb;
     public float groundMovementSpeed = 5f;
     PlayerStates currentPlayerState = PlayerStates.GROUNDED;
