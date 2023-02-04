@@ -77,6 +77,8 @@ public class MenuButtons : MonoBehaviour
 
             if (Vector3.Distance(buttons[i].transform.localPosition, menuPositions[targetIndex[i]]) > 0.05f)
             { buttons[i].transform.localPosition = Vector3.Lerp(buttons[i].transform.localPosition, menuPositions[targetIndex[i]], buttonMoveSpeed * Time.deltaTime); }
+
+            //buttons[i].transform.LookAt(Camera.main.transform.position, Vector3.up);
         }
     }
 
@@ -118,7 +120,7 @@ public class MenuButtons : MonoBehaviour
         if (idx > maxDistanceFromZero) alpha = menuPositions.Length - idx;
         else alpha = idx;
 
-        alpha = 1 / (alpha * 2);
+        alpha = 1 / (alpha * 3);
 
         return alpha;
     }
