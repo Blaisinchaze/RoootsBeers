@@ -13,35 +13,51 @@ public class SceneHandler : Singleton<SceneHandler>
     private int transitionDir = 0;
     private bool inTransition = false;
 
+    private string targetScene;
+
     private void Start()
     {
-        EventManager.Instance.SceneChange.AddListener(OnSceneChange);
-
-        OnSceneChange(false);
+        EventManager.Instance.EnterScene.AddListener(OnEnterScene);
+        EventManager.Instance.LeaveScene.AddListener(OnExitScene);
+        OnEnterScene();
     }
 
     private void Update()
     {
         transitionScreen.color = new Color(transitionScreen.color.r, transitionScreen.color.g, transitionScreen.color.b, transitionPercent);
-
-        if (Input.GetKeyDown(KeyCode.Space)) OnSceneChange(false);
-        if (Input.GetKeyDown(KeyCode.L)) OnSceneChange(true);
     }
 
-    //Call this
     public void LoadLevel(string levelName) 
     {
-        SceneManager.LoadScene(levelName);
-        EventManager.Instance.SceneChange.Invoke(false);
+        targetScene = levelName;
+        EventManager.Instance.LeaveScene.Invoke();
     }
 
-    private void OnSceneChange(bool isLoading) 
+    public void FauxTransitionScreen() 
     {
-        transitionDir = isLoading ? 1 : -1;
-        if(!inTransition) StartCoroutine(TransitionScreenSwitch());
+        StartCoroutine(OnOffTransition());
     }
 
-    private IEnumerator TransitionScreenSwitch() 
+    private IEnumerator OnOffTransition() 
+    {
+        OnExitScene();
+        yield return new WaitForSeconds(1.5f);
+        OnEnterScene();
+    }
+
+    private void OnEnterScene() 
+    {
+        transitionDir = -1;
+        if(!inTransition)StartCoroutine(TransitionScreenSwitch(false));
+    }
+
+    private void OnExitScene() 
+    {
+        transitionDir = 1;
+        if (!inTransition) StartCoroutine(TransitionScreenSwitch(true));
+    }
+
+    private IEnumerator TransitionScreenSwitch(bool loadOnComplete)
     {
         inTransition = true;
 
@@ -54,5 +70,14 @@ public class SceneHandler : Singleton<SceneHandler>
         transitionPercent = Mathf.Clamp(transitionPercent, 0, 1);
         inTransition = false;
         transitionDir = 0;
+
+
+        if (loadOnComplete && targetScene != "")
+        {
+            SceneManager.LoadScene(targetScene);
+            targetScene = "";
+            yield return new WaitForSeconds(0.5f);
+            EventManager.Instance.EnterScene.Invoke();
+        }
     }
 }

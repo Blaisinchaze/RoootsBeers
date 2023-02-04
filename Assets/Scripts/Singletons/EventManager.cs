@@ -11,7 +11,8 @@ public class EventManager : Singleton<EventManager>
     public UnityEvent PlayerSpawn = new();
     public UnityEvent PlayerDie   = new();
 
-    public BoolEvent SceneChange = new();
+    public UnityEvent LeaveScene = new();
+    public UnityEvent EnterScene = new();
 }
 
 public class BoolEvent : UnityEvent<bool> { }
