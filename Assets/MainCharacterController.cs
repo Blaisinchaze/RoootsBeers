@@ -307,7 +307,24 @@ public class MainCharacterController : MonoBehaviour
             rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
         }
     }
-
+    public void ReceiveFizzData(FizzData incData)
+    {
+        switch (incData.behaviour)
+        {
+            case FizzDataBehaviour.Readonly:
+                break;
+            case FizzDataBehaviour.Increment:
+                currentMaxFizzValue += incData.currentMaxFizzValue;
+                currentFizzValue += incData.currentFizzValue;
+                maxExcitement += incData.maxExcitement;
+                currentExcitement += incData.currentExcitement;
+                fizzLaunchForce += incData.fizzLaunchForce;
+                fizzFillPercent += incData.fizzFillPercent;
+                break;
+            default:
+                break;
+        }
+    }
     private void OnDrawGizmos()
     {
         Gizmos.DrawRay(groundCheckTransform.position, -Vector3.up * 0.5f);

@@ -6,33 +6,33 @@ using UnityEngine.Events;
 public enum InteractibleTrigger
 {
     SprayedByPlayer = 1,
-    LaunchedInto
+    HitByPlayer,
+    Proximity
 }
 
 public abstract class Interactible : MonoBehaviour
 {
+    [Header("Interactible Components")]
     [SerializeField] private Animation idleAnimation;
     [SerializeField] private Animation interactibleAnimation;
     [SerializeField] private Animation TriggeredAnimation;
 
     [SerializeField] private InteractibleCollider playerDetectionCollider;
 
-    private InteractibleTrigger interactTrigger;
+    [SerializeField] protected InteractibleTrigger interactTrigger;
     public InteractibleTrigger Trigger 
     { 
         get => interactTrigger; 
-        set => interactTrigger = value; 
     }
-
-    public PlayerEvent OnTrigger;
 
     protected virtual void Awake()
     {
         playerDetectionCollider.OnPlayerEnterTrigger.AddListener(Behaviour);
     }
-
-    protected void Behaviour(PlayerActionData playerData)
+    private void OnDestroy()
     {
-
+        playerDetectionCollider.OnPlayerEnterTrigger.RemoveListener(Behaviour);
     }
+    protected abstract void Behaviour(PlayerActionData playerData);
+
 }
