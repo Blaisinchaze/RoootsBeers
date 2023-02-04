@@ -6,6 +6,14 @@ using UnityEngine.InputSystem;
 
 public class MainCharacterController : MonoBehaviour
 {
+
+    public enum PlayerStates
+    {
+        GROUNDED,
+        AIRBORNE,
+        AIMING
+    }
+
     Vector3 moveDirection;
     Vector3 lookDirection;
     public Rigidbody rb;
@@ -16,14 +24,20 @@ public class MainCharacterController : MonoBehaviour
 
 
     [SerializeField]bool isGrounded = true;
+    public bool infiniteFizz = false;
     bool requestedLaunch = false;
     bool isLaunching = false;
 
     //Fizz variables
+    [Header("FIZZ PROPERTIES")]
+    public AnimationCurve launchStrengthCurve;
+    public float curveEvaluationValue = 0.0f;
+    public float curveResultingValue = 0.0f;
     const float maxPossibleFizzValue = 1.0f;
     float currentMaxFizzValue = 0.5f;
     float currentFizzValue = 0f;
     [SerializeField] float fizzLaunchForce = 3f;
+    float fizzFillPercent = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +50,12 @@ public class MainCharacterController : MonoBehaviour
         //checking for Ground
         isGrounded = Physics.Raycast(groundCheckTransform.position, -Vector3.up, 0.5f, ignoredColliders);
 
+        //Calculate percentage of fullness of the current fizz tank
+        fizzFillPercent = currentFizzValue / currentMaxFizzValue;
+        curveEvaluationValue = 1 - fizzFillPercent;
+        curveResultingValue = launchStrengthCurve.Evaluate(curveEvaluationValue);
+
+
         isLaunching = (requestedLaunch && currentFizzValue > 0);
 
         if (!isLaunching)
@@ -43,7 +63,7 @@ public class MainCharacterController : MonoBehaviour
             fizzPS.Stop();
             if (isGrounded)
             {
-                currentFizzValue += Time.deltaTime;
+                currentFizzValue += Time.deltaTime * 5;
                 currentFizzValue = Mathf.Clamp(currentFizzValue, 0, currentMaxFizzValue);
             }
         }
@@ -51,7 +71,10 @@ public class MainCharacterController : MonoBehaviour
         if (isLaunching && currentFizzValue > 0)
         {
             fizzPS.Play();
-            currentFizzValue -= Time.deltaTime;
+            if (!infiniteFizz)
+            {
+                currentFizzValue -= Time.deltaTime * 0.3f;
+            }
         }
 
 
@@ -71,9 +94,13 @@ public class MainCharacterController : MonoBehaviour
     private void FixedUpdate()
     {
        rb.MovePosition(rb.position + moveDirection * movementSpeed * Time.deltaTime);
-        if (isLaunching && currentFizzValue > 0)
+        if (isLaunching)
         {
-            rb.AddForce(rb.transform.up * fizzLaunchForce, ForceMode.Acceleration);
+            if (fizzFillPercent > 0.99)
+            {
+                rb.AddForce(rb.transform.up * fizzLaunchForce, ForceMode.Impulse);
+            }
+            rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue), ForceMode.Acceleration);
         }
     }
 
