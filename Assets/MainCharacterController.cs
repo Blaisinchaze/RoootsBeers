@@ -173,7 +173,7 @@ public class MainCharacterController : MonoBehaviour
 
 
                     //Switch camera
-                    transform.Rotate(new Vector3(rawMovementInput.y, rawMovementInput.x, 0f));
+                    rb.transform.Rotate(new Vector3(rawMovementInput.y, rawMovementInput.x, 0f));
 
                     currentExcitement += Time.deltaTime * aimingExcitementBuildupRate;
 
