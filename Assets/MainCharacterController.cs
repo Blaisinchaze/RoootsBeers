@@ -19,7 +19,7 @@ public class MainCharacterController : MonoBehaviour
     Vector2 rawMovementInput;
     Vector3 groundMoveDirection;
     Vector3 lookDirection;
-    [SerializeField] BoxCollider collider;
+    [SerializeField] Collider collider;
     public Rigidbody rb;
     public float groundMovementSpeed = 5f;
     PlayerStates currentPlayerState = PlayerStates.GROUNDED;
@@ -173,7 +173,7 @@ public class MainCharacterController : MonoBehaviour
 
 
                     //Switch camera
-                    transform.Rotate(new Vector3(rawMovementInput.y, rawMovementInput.x, 0f));
+                    rb.transform.Rotate(new Vector3(rawMovementInput.y, rawMovementInput.x, 0f));
 
                     currentExcitement += Time.deltaTime * aimingExcitementBuildupRate;
 
@@ -300,7 +300,8 @@ public class MainCharacterController : MonoBehaviour
             if (initialLaunchBurst && enableFizzBurst)
             {
                 //rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier * currentMaxFizzValue, ForceMode.Impulse);
-                rb.velocity = rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue);
+                rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier, ForceMode.VelocityChange);
+                //rb.velocity = rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue);
                 initialLaunchBurst = false;
             }
             rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
