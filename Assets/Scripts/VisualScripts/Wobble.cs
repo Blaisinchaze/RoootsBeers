@@ -54,7 +54,6 @@ public class Wobble : MonoBehaviour
            
             //angleAmount = (Mathf.Abs( parentBody.transform.rotation.eulerAngles.x/180) + Mathf.Abs(parentBody.transform.rotation.eulerAngles.z/180))/2;
             rend.material.SetFloat("_Angle", angleAmount);
-            Debug.Log(angleAmount);
         }
 
 
