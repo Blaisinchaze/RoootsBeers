@@ -11,26 +11,47 @@ public class MainCharacterController : MonoBehaviour
     public Rigidbody rb;
     public float movementSpeed = 5f;
     public ParticleSystem fizzPS;
+    public Transform groundCheckTransform;
+    public LayerMask ignoredColliders;
 
 
-    bool isGrounded;
-    bool requestedLaunch;
+    [SerializeField]bool isGrounded = true;
+    bool requestedLaunch = false;
+    bool isLaunching = false;
 
-
+    //Fizz variables
+    const float maxPossibleFizzValue = 1.0f;
+    float currentMaxFizzValue = 0.5f;
+    float currentFizzValue = 0f;
+    [SerializeField] float fizzLaunchForce = 3f;
 
     // Start is called before the first frame update
     void Start()
     {
+        currentFizzValue = currentMaxFizzValue;
     }
 
     public void Update()
     {
         //checking for Ground
-        // if (Physics.Raycast(transform.position,-Vector3.up,0.5f))
+        isGrounded = Physics.Raycast(groundCheckTransform.position, -Vector3.up, 0.5f, ignoredColliders);
 
-        if (requestedLaunch && isGrounded)
+        isLaunching = (requestedLaunch && currentFizzValue > 0);
+
+        if (!isLaunching)
+        {
+            fizzPS.Stop();
+            if (isGrounded)
+            {
+                currentFizzValue += Time.deltaTime;
+                currentFizzValue = Mathf.Clamp(currentFizzValue, 0, currentMaxFizzValue);
+            }
+        }
+
+        if (isLaunching && currentFizzValue > 0)
         {
             fizzPS.Play();
+            currentFizzValue -= Time.deltaTime;
         }
 
 
@@ -44,11 +65,20 @@ public class MainCharacterController : MonoBehaviour
     }
     public void UpdateLaunch(InputAction.CallbackContext context)
     {
-        requestedLaunch = context.performed;
+         requestedLaunch = context.performed;
     }
 
     private void FixedUpdate()
     {
-       rb.MovePosition(rb.position + moveDirection * movementSpeed);
+       rb.MovePosition(rb.position + moveDirection * movementSpeed * Time.deltaTime);
+        if (isLaunching && currentFizzValue > 0)
+        {
+            rb.AddForce(rb.transform.up * fizzLaunchForce, ForceMode.Acceleration);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(groundCheckTransform.position, -Vector3.up * 0.5f);
     }
 }
