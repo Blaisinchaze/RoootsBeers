@@ -13,9 +13,17 @@ public class MainCharacterController : MonoBehaviour
         AIRBORNE,
         AIMING
     }
+
+    //DEBUG STUFF
+    Vector3 resetPosition;
+    Quaternion resetRotation;
+    [SerializeField]bool enableFizzBurst = false;
+
+
     Vector2 rawMovementInput;
     Vector3 groundMoveDirection;
     Vector3 lookDirection;
+    [SerializeField] BoxCollider collider;
     public Rigidbody rb;
     public float groundMovementSpeed = 5f;
     PlayerStates currentPlayerState = PlayerStates.GROUNDED;
@@ -38,22 +46,30 @@ public class MainCharacterController : MonoBehaviour
     public float curveEvaluationValue = 0.0f;
     public float curveResultingValue = 0.0f;
     const float maxPossibleFizzValue = 1.0f;
-    float currentMaxFizzValue = 0.5f;
-    float currentFizzValue = 0f;
+    [SerializeField]float currentMaxFizzValue = 0.5f;
+    [SerializeField]float currentFizzValue = 0f;
+    [SerializeField] float fizzBurnPerSecond = 0.5f;
     float maxExcitement = 1.0f;
-    float currentExcitement = 0.0f;
+    [SerializeField]float currentExcitement = 0.0f;
+    [SerializeField] float excitementBuildupRate = 5f;
     [SerializeField] float fizzLaunchForce = 3f;
+    [SerializeField] float fizzBurstMultiplier = 3f;
+
     float fizzFillPercent = 0.0f;
+    bool initialLaunchBurst = false;
 
     //Aim variables
     [Header("AIM PROPERTIES")]
     bool requestedAim = false;
     bool isAiming = false;
+    float aimingExcitementBuildupRate = 10f;
 
     // Start is called before the first frame update
     void Start()
     {
         currentFizzValue = currentMaxFizzValue;
+        resetPosition = rb.transform.position;
+        resetRotation = rb.transform.rotation;
 
     }
 
@@ -68,9 +84,9 @@ public class MainCharacterController : MonoBehaviour
 
     }
 
-    private void OnStateEnter(PlayerStates state, PlayerStates fromState)
+    private void OnStateEnter(PlayerStates newState, PlayerStates fromState)
     {
-        switch (state)
+        switch (newState)
         {
             case PlayerStates.GROUNDED:
                 {
@@ -79,12 +95,13 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIRBORNE:
                 {
-
+                    initialLaunchBurst = true;
                 }
                 break;
             case PlayerStates.AIMING:
                 {
-
+                    rb.useGravity = false;
+                    collider.enabled = false;
                 }
                 break;
             default:
@@ -92,9 +109,9 @@ public class MainCharacterController : MonoBehaviour
         }
     }
 
-    private void OnStateExit(PlayerStates state, PlayerStates toState)
+    private void OnStateExit(PlayerStates previousState, PlayerStates toState)
     {
-        switch (state)
+        switch (previousState)
         {
             case PlayerStates.GROUNDED:
                 {
@@ -108,7 +125,12 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIMING:
                 {
-
+                    if (toState == PlayerStates.AIRBORNE)
+                    {
+                        rb.useGravity = false;
+                        isLaunching = true;
+                    }
+                    collider.enabled = true;
                 }
                 break;
             default:
@@ -140,10 +162,12 @@ public class MainCharacterController : MonoBehaviour
                     if (currentFizzValue > 0)
                     {
                         isLaunching = true;
+                        rb.useGravity = false;
                     }
                     else
                     {
                         isLaunching = false;
+                        rb.useGravity = true;
                     }
                 }
                 break;
@@ -152,7 +176,9 @@ public class MainCharacterController : MonoBehaviour
 
 
                     //Switch camera
-                    transform.Rotate(new Vector3(rawMovementInput.x, rawMovementInput.y, 0f));
+                    transform.Rotate(new Vector3(rawMovementInput.y, rawMovementInput.x, 0f));
+
+                    currentExcitement += Time.deltaTime * aimingExcitementBuildupRate;
 
 
                     //Aim button released
@@ -161,6 +187,10 @@ public class MainCharacterController : MonoBehaviour
                         if (currentExcitement < 0.9f)
                         {
                             TransitionToState(PlayerStates.GROUNDED);
+                        }
+                        else
+                        {
+                            TransitionToState(PlayerStates.AIRBORNE);
                         }
                     }
 
@@ -184,7 +214,7 @@ public class MainCharacterController : MonoBehaviour
             if (isGrounded)
             {
                 currentFizzValue += Time.deltaTime * 5;
-                currentFizzValue = Mathf.Clamp(currentFizzValue, 0, currentMaxFizzValue);
+
             }
         }
 
@@ -193,14 +223,14 @@ public class MainCharacterController : MonoBehaviour
             fizzPS.Play();
             if (!infiniteFizz)
             {
-                currentFizzValue -= Time.deltaTime * 0.3f;
+                currentFizzValue -= Time.deltaTime * fizzBurnPerSecond;
             }
         }
 
         //Excitement buildup when moving
-        if (rb.velocity.magnitude > 0 && !isLaunching)
+        if (rb.velocity.magnitude > 0.1f && !isLaunching)
         {
-            currentExcitement += Time.deltaTime;
+            currentExcitement += Time.deltaTime * excitementBuildupRate;
         }
 
         //Checking whether player is touchnig the ground
@@ -214,6 +244,12 @@ public class MainCharacterController : MonoBehaviour
         fizzFillPercent = currentFizzValue / currentMaxFizzValue;
         curveEvaluationValue = 1 - fizzFillPercent;
         curveResultingValue = launchStrengthCurve.Evaluate(curveEvaluationValue);
+
+        //Clamping meter values
+        currentExcitement = Mathf.Clamp(currentExcitement, 0.0f, 1.0f);
+        currentFizzValue = Mathf.Clamp(currentFizzValue, 0, currentMaxFizzValue);
+        currentMaxFizzValue = Mathf.Clamp(currentMaxFizzValue, 0, maxPossibleFizzValue);
+
 
         #endregion
     }
@@ -229,12 +265,24 @@ public class MainCharacterController : MonoBehaviour
         requestedAim = context.performed;
     }
 
+    public void ResetPlayer(InputAction.CallbackContext context)
+    {
+        rb.transform.position = resetPosition;
+        rb.transform.rotation = resetRotation;
+        rb.Sleep();
+    }
+
+    public void DebugFizzAdjustment(InputAction.CallbackContext context)
+    {
+        currentMaxFizzValue +=  0.05f *context.ReadValue<float>();
+    }
+
     private void FixedUpdate()
     {
         //Player Movement when walking around
         if (currentPlayerState == PlayerStates.GROUNDED && isGrounded)
         {
-            rb.MovePosition(rb.position + groundMoveDirection * groundMovementSpeed * Time.deltaTime);
+            rb.MovePosition(rb.position + groundMoveDirection * groundMovementSpeed * Time.fixedDeltaTime);
         }
 
         //Player movement when airborne
@@ -242,20 +290,21 @@ public class MainCharacterController : MonoBehaviour
         {
             if (isLaunching)
             {
-
             }
             else
             {
-                rb.MovePosition(rb.position + groundMoveDirection * airMovementSpeed *  Time.deltaTime);
+                rb.MovePosition(rb.position + groundMoveDirection * airMovementSpeed *  Time.fixedDeltaTime);
             }
         }
         if (isLaunching)
         {
-            if (fizzFillPercent > 0.99)
+            if (initialLaunchBurst && enableFizzBurst)
             {
-                rb.AddForce(rb.transform.up * fizzLaunchForce, ForceMode.Impulse);
+                //rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier * currentMaxFizzValue, ForceMode.Impulse);
+                rb.velocity = rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue);
+                initialLaunchBurst = false;
             }
-            rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue), ForceMode.Acceleration);
+            rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
         }
     }
 
