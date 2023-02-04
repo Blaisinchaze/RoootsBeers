@@ -3,18 +3,18 @@ using UnityEngine.Events;
 
 public class InteractibleCollider : MonoBehaviour
 {
-    public PlayerEvent OnPlayerEnterTrigger;
+    public PlayerEvent OnPlayerEnterTrigger = new();
     private MainCharacterController player;
     public InteractibleTrigger triggerRequirement;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("PlayerAction")) return;
-        if (!other.TryGetComponent<PlayerActionData>(out var playerActionData)) return;
+        if (!other.CompareTag("Player")) return;
 
+        if (!other.TryGetComponent<PlayerActionCollider>(out var actionCol)) return;
         if (triggerRequirement == InteractibleTrigger.Proximity)
             Hit();
-        switch (playerActionData.State)
+        switch (actionCol.actionData.State)
         {
             case PlayerStates.GROUNDED:
                 break;
@@ -29,7 +29,7 @@ public class InteractibleCollider : MonoBehaviour
         }
         void Hit()
         {
-            OnPlayerEnterTrigger?.Invoke(playerActionData);
+            OnPlayerEnterTrigger?.Invoke(actionCol.actionData);
 
         }
 

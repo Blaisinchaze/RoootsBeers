@@ -42,9 +42,10 @@ GameObject:
   - component: {fileID: 8555291508463439828}
   - component: {fileID: 8555291508463439831}
   - component: {fileID: 804435207}
+  - component: {fileID: 6114842881600544434}
   m_Layer: 6
   m_Name: Root
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,6 +99,18 @@ CapsuleCollider:
   m_Height: 2.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.41, z: 0}
+--- !u!114 &6114842881600544434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8555291508463439829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1eb5fbcc431c8c4fb7c2982bc4a5aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8555291508776413579
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,6 +179,7 @@ MonoBehaviour:
   ignoredColliders:
     serializedVersion: 2
     m_Bits: 55
+  ActionDataCollider: {fileID: 6114842881600544434}
   isGrounded: 1
   infiniteFizz: 0
   airMovementSpeed: 3
@@ -206,6 +220,10 @@ MonoBehaviour:
   curveResultingValue: 0
   currentMaxFizzValue: 0.5
   currentFizzValue: 0
+  FizzData:
+    currentFizzValue: 0
+    currentExcitement: 0
+    fizzLaunchForce: 0
   fizzLaunchForce: 1000
   fizzBurstMultiplier: 0.025
   fizzBurnPerSecond: 0.5

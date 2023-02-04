@@ -28,6 +28,7 @@ public abstract class Interactible : MonoBehaviour
     protected virtual void Awake()
     {
         playerDetectionCollider.OnPlayerEnterTrigger.AddListener(Behaviour);
+        playerDetectionCollider.triggerRequirement = interactTrigger;
     }
     private void OnDestroy()
     {

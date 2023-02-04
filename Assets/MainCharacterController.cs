@@ -27,6 +27,7 @@ public class MainCharacterController : MonoBehaviour
     public Transform groundCheckTransform;
     public LayerMask ignoredColliders;
 
+    [SerializeField] private PlayerActionCollider ActionDataCollider;
 
     [SerializeField]bool isGrounded = true;
     public bool infiniteFizz = false;
@@ -288,8 +289,8 @@ public class MainCharacterController : MonoBehaviour
 
 
 
-        FizzData = new FizzData(currentMaxFizzValue, currentFizzValue, maxExcitement,
-        currentExcitement, fizzLaunchForce, fizzFillPercent);
+        FizzData = new FizzData(currentFizzValue, currentExcitement, fizzLaunchForce);
+        ActionDataCollider.actionData = new PlayerActionData(FizzData, currentPlayerState, isGrounded);
         #endregion
 
     }
@@ -350,21 +351,20 @@ public class MainCharacterController : MonoBehaviour
     }
     public void ReceiveFizzData(FizzData incData)
     {
+        Debug.Log("Received fizz data. Current stats are :");
+        Debug.Log("Fizz: " + currentFizzValue.ToString());
         switch (incData.behaviour)
         {
             case FizzDataBehaviour.Readonly:
                 break;
             case FizzDataBehaviour.Increment:
-                currentMaxFizzValue += incData.currentMaxFizzValue;
                 currentFizzValue += incData.currentFizzValue;
-                maxExcitement += incData.maxExcitement;
-                currentExcitement += incData.currentExcitement;
-                fizzLaunchForce += incData.fizzLaunchForce;
-                fizzFillPercent += incData.fizzFillPercent;
                 break;
             default:
                 break;
         }
+        Debug.Log("Updated Fizz Data. New stats are :");
+        Debug.Log("Fizz: " + currentFizzValue.ToString());
     }
     private void OnDrawGizmos()
     {
