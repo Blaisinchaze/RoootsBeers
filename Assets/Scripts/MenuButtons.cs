@@ -31,7 +31,7 @@ public class MenuButtons : MonoBehaviour
         }
 
         selectedOption = 1;
-        ChangeOption(false);
+        ChangeOption(true);
     }
 
     // Update is called once per frame
