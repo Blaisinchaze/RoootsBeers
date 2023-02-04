@@ -301,7 +301,8 @@ public class MainCharacterController : MonoBehaviour
             if (initialLaunchBurst && enableFizzBurst)
             {
                 //rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier * currentMaxFizzValue, ForceMode.Impulse);
-                rb.velocity = rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue);
+                rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier, ForceMode.VelocityChange);
+                //rb.velocity = rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue);
                 initialLaunchBurst = false;
             }
             rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
