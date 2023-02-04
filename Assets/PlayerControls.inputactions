@@ -33,9 +33,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Aim",
+                    "name": "DebugRestart",
                     "type": "Button",
-                    "id": "9ddcc1ba-620e-48f0-89bf-02f9633a1e51",
+                    "id": "6e958416-65cb-43dc-88b5-c236df91fb2c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DebugFizzMeter",
+                    "type": "Button",
+                    "id": "39d70b34-d65c-40d6-9b62-81d62adffcd5",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -265,14 +274,47 @@
                 },
                 {
                     "name": "",
-                    "id": "2e447158-c4cf-4310-8d98-41f9430a3e0a",
-                    "path": "<Keyboard>/leftCtrl",
+                    "id": "ee637d79-667a-4935-80dc-33e069dee372",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Aim",
+                    "action": "DebugRestart",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "7baf6f8a-1897-4a9a-a504-02cffad375f9",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugFizzMeter",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "positive",
+                    "id": "e4e53d1e-e656-4110-ad82-de217cc42203",
+                    "path": "<Keyboard>/numpadPlus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "DebugFizzMeter",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "negative",
+                    "id": "5b6a6cbb-ed00-402b-af54-4cd0d25d66cd",
+                    "path": "<Keyboard>/numpadMinus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "DebugFizzMeter",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
