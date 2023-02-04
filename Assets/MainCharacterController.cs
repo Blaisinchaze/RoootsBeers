@@ -37,6 +37,7 @@ public class MainCharacterController : MonoBehaviour
     public float airMovementSpeed = 2f;
 
     //Fizz variables
+    [Space]
     [Header("FIZZ PROPERTIES")]
     public AnimationCurve launchStrengthCurve;
     public float curveEvaluationValue = 0.0f;
@@ -44,26 +45,37 @@ public class MainCharacterController : MonoBehaviour
     const float maxPossibleFizzValue = 1.0f;
     [SerializeField]float currentMaxFizzValue = 0.5f;
     [SerializeField]float currentFizzValue = 0f;
-    [SerializeField] float fizzBurnPerSecond = 0.5f;
-    float maxExcitement = 1.0f;
-    [SerializeField]float currentExcitement = 0.0f;
-    [SerializeField] float excitementBuildupRate = 5f;
-    [SerializeField] float fizzLaunchForce = 3f;
-    [SerializeField] float fizzBurstMultiplier = 3f;
-
     float fizzFillPercent = 0.0f;
     bool initialLaunchBurst = false;
-
     public FizzData FizzData;
+
+    //Launch fizz propertie
+    [Space]
+    [Header("Launch Fizz properties")]
+    [SerializeField] float fizzLaunchForce = 3f;
+    [SerializeField] float fizzBurstMultiplier = 3f;
+    [SerializeField] float fizzBurnPerSecond = 0.5f;
+
+    //Liquid excitement properties
+    [Space]
+    [Header("Liquid excitement properties")]
+    const float excitementPointOfNoReturn = 0.9f;
+    const float maxExcitement = 1.0f;
+    [SerializeField]float currentExcitement = 0.0f;
+    [SerializeField] float excitementBuildupRate = 0.05f;
+
+
     //Aim variables
+    [Space]
     [Header("AIM PROPERTIES")]
     bool requestedAim = false;
     bool isAiming = false;
-    float aimingExcitementBuildupRate = 10f;
+    float aimingExcitementBuildupRate = 0.5f;
 
     // Start is called before the first frame update
     void Start()
     {
+        TransitionToState(PlayerStates.GROUNDED);
         currentFizzValue = currentMaxFizzValue;
         resetPosition = rb.transform.position;
         resetRotation = rb.transform.rotation;
@@ -87,16 +99,20 @@ public class MainCharacterController : MonoBehaviour
         {
             case PlayerStates.GROUNDED:
                 {
-
+                    rb.constraints = RigidbodyConstraints.None;
+                    rb.constraints = RigidbodyConstraints.FreezeRotationX;
+                    rb.constraints = RigidbodyConstraints.FreezeRotationZ;
                 }
                 break;
             case PlayerStates.AIRBORNE:
                 {
+                    rb.constraints = RigidbodyConstraints.None;
                     initialLaunchBurst = true;
                 }
                 break;
             case PlayerStates.AIMING:
                 {
+                    rb.constraints = RigidbodyConstraints.FreezeAll;
                     rb.useGravity = false;
                     collider.enabled = false;
                 }
@@ -144,13 +160,36 @@ public class MainCharacterController : MonoBehaviour
         {
             case PlayerStates.GROUNDED:
                 {
-
-
                     if (requestedAim && isGrounded)
                     {
                         TransitionToState(PlayerStates.AIMING);
                     }
 
+                    //excitement buildup before point of no return
+                    if (currentExcitement < excitementPointOfNoReturn)
+                    {
+
+                        if (groundMoveDirection.sqrMagnitude > 0)
+                        {
+                            currentExcitement += excitementBuildupRate * Time.deltaTime;
+                        }
+                    }
+                    //excitement buildup after point of no return
+                    else
+                    {
+                        currentExcitement += excitementBuildupRate * Time.deltaTime;
+
+                        if (groundMoveDirection.sqrMagnitude > 0)
+                        {
+                            currentExcitement += excitementBuildupRate * 2 * Time.deltaTime;
+                        }
+                    }
+                    //Spontaneous burst after max excitement reached
+                    if (currentExcitement >= maxExcitement)
+                    {
+
+                        TransitionToState(PlayerStates.AIRBORNE);
+                    }
 
                 }
                 break;
@@ -170,27 +209,32 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIMING:
                 {
-
-
                     //Switch camera
+
+
+                    //rotate player to aim the launch
                     rb.transform.Rotate(new Vector3(rawMovementInput.y, rawMovementInput.x, 0f));
 
-                    currentExcitement += Time.deltaTime * aimingExcitementBuildupRate;
 
-
-                    //Aim button released
-                    if (!requestedAim)
+                    //logic behind buildup and button release based on current level of excitement
+                    if (currentExcitement < excitementPointOfNoReturn)
                     {
-                        if (currentExcitement < 0.9f)
+                        currentExcitement += Time.deltaTime * excitementBuildupRate;
+
+                        if (!requestedAim)
                         {
                             TransitionToState(PlayerStates.GROUNDED);
                         }
-                        else
+                    }
+                    else
+                    {
+                        currentExcitement += excitementBuildupRate / 4 * Time.deltaTime;
+
+                        if (!requestedAim)
                         {
                             TransitionToState(PlayerStates.AIRBORNE);
                         }
                     }
-
                 }
                 break;
             default:
@@ -210,7 +254,7 @@ public class MainCharacterController : MonoBehaviour
             fizzPS.Stop();
             if (isGrounded)
             {
-                currentFizzValue += Time.deltaTime * 5;
+                currentFizzValue += Time.deltaTime * 10;
 
             }
         }
@@ -224,13 +268,7 @@ public class MainCharacterController : MonoBehaviour
             }
         }
 
-        //Excitement buildup when moving
-        if (rb.velocity.magnitude > 0.1f && !isLaunching)
-        {
-            currentExcitement += Time.deltaTime * excitementBuildupRate;
-        }
-
-        //Checking whether player is touchnig the ground
+        //Checking whether player is touching the ground
         isGrounded = Physics.Raycast(groundCheckTransform.position, -Vector3.up, 0.5f, ignoredColliders);
         if (currentPlayerState == PlayerStates.AIRBORNE && isGrounded && !isLaunching)
         {
@@ -243,14 +281,17 @@ public class MainCharacterController : MonoBehaviour
         curveResultingValue = launchStrengthCurve.Evaluate(curveEvaluationValue);
 
         //Clamping meter values
-        currentExcitement = Mathf.Clamp(currentExcitement, 0.0f, 1.0f);
-        currentFizzValue = Mathf.Clamp(currentFizzValue, 0, currentMaxFizzValue);
+        currentExcitement = Mathf.Clamp(currentExcitement, 0.0f, maxExcitement);
+        currentFizzValue = Mathf.Clamp(currentFizzValue, 0.0f, currentMaxFizzValue);
         currentMaxFizzValue = Mathf.Clamp(currentMaxFizzValue, 0, maxPossibleFizzValue);
 
 
-        #endregion
+
+
         FizzData = new FizzData(currentMaxFizzValue, currentFizzValue, maxExcitement,
-            currentExcitement, fizzLaunchForce, fizzFillPercent);
+        currentExcitement, fizzLaunchForce, fizzFillPercent);
+        #endregion
+
     }
     public void UpdateMovement(InputAction.CallbackContext context)
     {

@@ -83,7 +83,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!1 &8555291508469194298
 GameObject:
@@ -102,7 +102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8555291508469194293
 Transform:
   m_ObjectHideFlags: 0
@@ -276,11 +276,11 @@ MonoBehaviour:
   curveResultingValue: 0
   currentMaxFizzValue: 0.5
   currentFizzValue: 0
-  fizzBurnPerSecond: 0.5
-  currentExcitement: 0
-  excitementBuildupRate: 5
   fizzLaunchForce: 1000
   fizzBurstMultiplier: 0.025
+  fizzBurnPerSecond: 0.5
+  currentExcitement: 0
+  excitementBuildupRate: 0.05
 --- !u!114 &8555291508776413575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,7 +588,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8555291509763361221
 Transform:
   m_ObjectHideFlags: 0
@@ -5544,7 +5544,7 @@ PrefabInstance:
     - target: {fileID: 4569816613201962456, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4569816613201962460, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
         type: 3}
