@@ -100,13 +100,13 @@ public class MainCharacterController : MonoBehaviour
             case PlayerStates.GROUNDED:
                 {
                     rb.constraints = RigidbodyConstraints.None;
-                    rb.constraints = RigidbodyConstraints.FreezeRotationX;
-                    rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+                    rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
                 }
                 break;
             case PlayerStates.AIRBORNE:
                 {
                     rb.constraints = RigidbodyConstraints.None;
+                    currentExcitement = 0f;
                     initialLaunchBurst = true;
                 }
                 break;
