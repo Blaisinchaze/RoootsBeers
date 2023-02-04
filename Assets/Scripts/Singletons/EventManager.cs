@@ -15,3 +15,4 @@ public class EventManager : Singleton<EventManager>
 }
 
 public class BoolEvent : UnityEvent<bool> { }
+public class PlayerEvent : UnityEvent<PlayerActionData> { }

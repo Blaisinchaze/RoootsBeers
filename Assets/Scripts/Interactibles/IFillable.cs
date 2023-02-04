@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IFillable : MonoBehaviour
+public interface IFillable
 {
     // Start is called before the first frame update
     void Start()

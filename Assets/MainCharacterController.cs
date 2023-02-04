@@ -3,16 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+public enum PlayerStates
+{
+    GROUNDED,
+    AIRBORNE,
+    AIMING
+}
 
 public class MainCharacterController : MonoBehaviour
 {
 
-    public enum PlayerStates
-    {
-        GROUNDED,
-        AIRBORNE,
-        AIMING
-    }
+    
     Vector2 rawMovementInput;
     Vector3 groundMoveDirection;
     Vector3 lookDirection;
@@ -44,7 +45,7 @@ public class MainCharacterController : MonoBehaviour
     float currentExcitement = 0.0f;
     [SerializeField] float fizzLaunchForce = 3f;
     float fizzFillPercent = 0.0f;
-
+    public FizzData FizzData;
     //Aim variables
     [Header("AIM PROPERTIES")]
     bool requestedAim = false;
@@ -216,6 +217,8 @@ public class MainCharacterController : MonoBehaviour
         curveResultingValue = launchStrengthCurve.Evaluate(curveEvaluationValue);
 
         #endregion
+        FizzData = new FizzData(currentMaxFizzValue, currentFizzValue, maxExcitement,
+            currentExcitement, fizzLaunchForce, fizzFillPercent);
     }
     public void UpdateMovement(InputAction.CallbackContext context)
     {
@@ -263,4 +266,5 @@ public class MainCharacterController : MonoBehaviour
     {
         Gizmos.DrawRay(groundCheckTransform.position, -Vector3.up * 0.5f);
     }
+
 }
