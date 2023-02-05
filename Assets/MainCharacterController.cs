@@ -25,12 +25,17 @@ public class MainCharacterController : MonoBehaviour
     public Transform groundCheckTransform;
     public LayerMask ignoredColliders;
     public Animator playerAnimator;
+    public Transform cameraFollowPoint;
+    public Transform topLaunchPoint;
+    public Transform bottomLaunchPoint;
 
 
     //Input Controls
     Vector2 rawMovementInput;
     Vector3 groundMoveDirection;
     Vector3 lookDirection;
+    Vector2 rawMouseDeltaInput;
+    Camera mainCam;
 
     PlayerStates currentPlayerState = PlayerStates.GROUNDED;
 
@@ -56,6 +61,7 @@ public class MainCharacterController : MonoBehaviour
     float fizzFillPercent = 0.0f;
     bool initialLaunchBurst = false;
     private Wobble wobbleRef;
+    Vector3 launchDir = Vector3.zero;
     public FizzData FizzData;
 
     //Launch fizz propertie
@@ -89,6 +95,7 @@ public class MainCharacterController : MonoBehaviour
         resetPosition = rb.transform.position;
         resetRotation = rb.transform.rotation;
         wobbleRef = GetComponentInChildren<Wobble>();
+        mainCam = Camera.main;
 
     }
 
@@ -111,6 +118,7 @@ public class MainCharacterController : MonoBehaviour
                 {
                     rb.constraints = RigidbodyConstraints.None;
                     rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                    rb.useGravity = true;
                 }
                 break;
             case PlayerStates.AIRBORNE:
@@ -154,7 +162,9 @@ public class MainCharacterController : MonoBehaviour
                     if (toState == PlayerStates.AIRBORNE)
                     {
                         rb.useGravity = false;
+                        launchDir = topLaunchPoint.up.normalized;
                         isLaunching = true;
+                        playerAnimator.Play("Launch");
                     }
                     collider.enabled = true;
                     playerAnimator.SetBool("Aiming", false);
@@ -174,6 +184,9 @@ public class MainCharacterController : MonoBehaviour
         {
             case PlayerStates.GROUNDED:
                 {
+
+                    //Update playerbody rotation
+                    //Vector3 smoothedLookInputDirection = Vector3.Slerp(rb.transform.rotation, lookDirection, 1 - Mathf.Exp(-10 * Time.deltaTime)).normalized;
                     playerAnimator.SetBool("Moving", groundMoveDirection.sqrMagnitude > 0);
                     if (requestedAim && isGrounded)
                     {
@@ -277,7 +290,7 @@ public class MainCharacterController : MonoBehaviour
         }
 
         //Checking whether player is touching the ground
-        isGrounded = Physics.Raycast(groundCheckTransform.position, -Vector3.up, 0.5f, ignoredColliders);
+        isGrounded = Physics.BoxCast(groundCheckTransform.position,new Vector3(0.3f,0.3f),Vector3.down, Quaternion.identity, 0.5f,ignoredColliders);
         playerAnimator.SetBool("IsGrounded", isGrounded);
         if (currentPlayerState == PlayerStates.AIRBORNE && isGrounded && !isLaunching)
         {
@@ -308,6 +321,15 @@ public class MainCharacterController : MonoBehaviour
         rawMovementInput = context.ReadValue<Vector2>();
         groundMoveDirection.x = rawMovementInput.x;
         groundMoveDirection.z = rawMovementInput.y;
+        groundMoveDirection = Vector3.ClampMagnitude(new Vector3(rawMovementInput.y, 0f, -rawMovementInput.x),1f);
+    }
+
+    public void UpdateLookInput(InputAction.CallbackContext context)
+    {
+        rawMouseDeltaInput = context.ReadValue<Vector2>();
+        Quaternion cameraRot = mainCam.transform.rotation;
+        lookDirection = Vector3.ProjectOnPlane(cameraRot * Vector3.forward, Vector3.up).normalized;
+        //lookDirection = new Vector3(rawMouseDeltaInput.x, rawMouseDeltaInput.y, 0f);
     }
 
     public void UpdateAim(InputAction.CallbackContext context)
@@ -332,7 +354,18 @@ public class MainCharacterController : MonoBehaviour
         //Player Movement when walking around
         if (currentPlayerState == PlayerStates.GROUNDED && isGrounded)
         {
-            rb.MovePosition(rb.position + groundMoveDirection * groundMovementSpeed * Time.fixedDeltaTime);
+            Vector3 inputRight = Vector3.Cross(lookDirection, Vector3.up).normalized;
+            Vector3 reorientedInput = Vector3.Cross(Vector3.up, inputRight).normalized * groundMoveDirection.magnitude;
+            Vector3 forwardRelativeVerticalinput = lookDirection * groundMoveDirection.x;
+            Vector3 rightRelativeHorizontalInput = inputRight * groundMoveDirection.z;
+            Vector3 CameraRelativeMovement = forwardRelativeVerticalinput + rightRelativeHorizontalInput;
+            //Vector3 flatCamRot = mainCam.transform.forward;
+            //flatCamRot.y = 0;
+            if (groundMoveDirection.magnitude > 0)
+            {
+                rb.transform.rotation = Quaternion.LookRotation(CameraRelativeMovement, Vector3.up);
+            }
+            rb.MovePosition(rb.position + CameraRelativeMovement * groundMovementSpeed * Time.fixedDeltaTime);
         }
 
         //Player movement when airborne
@@ -351,11 +384,12 @@ public class MainCharacterController : MonoBehaviour
             if (initialLaunchBurst && enableFizzBurst)
             {
                 //rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier * currentMaxFizzValue, ForceMode.Impulse);
-                rb.AddForce(rb.transform.up * fizzLaunchForce * fizzBurstMultiplier, ForceMode.VelocityChange);
+
+                rb.AddForce(launchDir.normalized * fizzLaunchForce * fizzBurstMultiplier, ForceMode.VelocityChange);
                 //rb.velocity = rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue);
                 initialLaunchBurst = false;
             }
-            rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
+            rb.AddForce(launchDir.normalized * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
         }
     }
     public void ReceiveFizzData(FizzData incData)
