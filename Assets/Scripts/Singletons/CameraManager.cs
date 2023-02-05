@@ -53,7 +53,9 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
         if (Input.GetKeyDown(KeyCode.Alpha1)) ActivateCamera(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) ActivateCamera(1);
         if (Input.GetKeyDown(KeyCode.Alpha3)) ActivateCamera(2);
-        
+        if (Input.GetKeyDown(KeyCode.Alpha4)) ActivateCamera(3);
+
+
     }
 
     private void DeactivateCamera()
