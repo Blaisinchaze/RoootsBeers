@@ -66,6 +66,11 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
                 }
                 return; 
             }
+            else if (timer >= activeSequence.duration && timer < activeSequence.timeBeforeExit)
+            {
+                onSequenceComplete?.Invoke();
+                if (onSequenceComplete is not null) onSequenceComplete = null;
+            }
 
             //update lookat point;
             //update camera position;

@@ -11,8 +11,9 @@ public class InteractibleCollider : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        if (!other.TryGetComponent<PlayerActionCollider>(out var actionCol)) return;
-        if (triggerRequirement == InteractibleTrigger.Proximity)
+        if (!other.TryGetComponent<PlayerActionCollider>(out var actionCol))
+             return;
+            if (triggerRequirement == InteractibleTrigger.Proximity)
         {
             Hit();
             return;
