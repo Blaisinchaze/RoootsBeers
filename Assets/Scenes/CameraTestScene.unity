@@ -4470,21 +4470,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7881836145954338453, guid: 9b167d58567e22d4bb8318eb1a87032f,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8030504809651716030, guid: 9b167d58567e22d4bb8318eb1a87032f,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8318456140075725336, guid: 9b167d58567e22d4bb8318eb1a87032f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8555291508776413572, guid: 9b167d58567e22d4bb8318eb1a87032f,
         type: 3}
       propertyPath: m_RootOrder
@@ -4540,11 +4525,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8555291508776413578, guid: 9b167d58567e22d4bb8318eb1a87032f,
-        type: 3}
-      propertyPath: fizzPSParent
-      value: 
-      objectReference: {fileID: 1511737600}
     - target: {fileID: 8555291508776413579, guid: 9b167d58567e22d4bb8318eb1a87032f,
         type: 3}
       propertyPath: m_Name
@@ -8681,12 +8661,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1478712034}
   m_Mesh: {fileID: 7678924872972434518, guid: 02ad78cca7f19f843b49a2e580791919, type: 3}
---- !u!1 &1511737600 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8318456140075725336, guid: 9b167d58567e22d4bb8318eb1a87032f,
-    type: 3}
-  m_PrefabInstance: {fileID: 642979134}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1529998898
 GameObject:
   m_ObjectHideFlags: 0
