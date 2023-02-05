@@ -16,7 +16,7 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
 
     public float timer;
 
-    public void ActivateCamera(int idx) 
+    public void ActivateSequence(int idx) 
     {
         if (activeSequence != null || idx >= sequences.Count || sequences[idx] == null) return;
 
@@ -50,9 +50,9 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
                 CinemachinePathBase.PositionUnits.Normalized);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) ActivateCamera(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) ActivateCamera(1);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) ActivateCamera(2);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) ActivateSequence(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) ActivateSequence(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) ActivateSequence(2);
         
     }
 
