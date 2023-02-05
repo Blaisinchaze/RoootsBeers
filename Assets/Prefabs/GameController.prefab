@@ -77,3 +77,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8bfa35e8fb665a047a42a41125ba4a78, type: 3}
   - {fileID: 8300000, guid: c11e4d7c0948b1a4ab9f3be2669edefc, type: 3}
   - {fileID: 8300000, guid: c7207793c82ca234d9eaef349375d132, type: 3}
+  CollectPickup:
+  - {fileID: 8300000, guid: 0fef6d20a5728f9479c9b09e67220c5b, type: 3}
+  - {fileID: 8300000, guid: 3a7bc9b92743fdd45b73dfa73eda0dfa, type: 3}
+  - {fileID: 8300000, guid: 53bd2d8f5c074094fb2ebdd1b50ba8b7, type: 3}
+  - {fileID: 8300000, guid: d8d45e5124cef0e4cbb59db87336f080, type: 3}
