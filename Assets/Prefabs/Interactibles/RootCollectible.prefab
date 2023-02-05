@@ -348,7 +348,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   playerDetectionCollider: {fileID: 8761363645559979348}
   interactTrigger: 3
-  collectibleValue: 0.1
+  collectibleValue: 0.01
 --- !u!1 &6840222330316485065
 GameObject:
   m_ObjectHideFlags: 0
