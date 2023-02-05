@@ -37,13 +37,13 @@ public class MainCharacterController : MonoBehaviour
     Vector2 rawMouseDeltaInput;
     Camera mainCam;
 
-    PlayerStates currentPlayerState = PlayerStates.GROUNDED;
+    public PlayerStates currentPlayerState = PlayerStates.GROUNDED;
 
     [SerializeField] private PlayerActionCollider ActionDataCollider;
 
     bool isGrounded = true;
     [SerializeField] bool infiniteFizz = false;
-    bool isLaunching = false;
+    public bool isLaunching = false;
 
     //areal controls properties
     [Header("Aerial properties")]
