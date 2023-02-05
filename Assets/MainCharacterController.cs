@@ -300,7 +300,7 @@ public class MainCharacterController : MonoBehaviour
 
 
         playerAnimator.SetFloat("LiquidAmount", currentMaxFizzValue);
-        FizzData = new FizzData(currentFizzValue, currentExcitement, fizzLaunchForce);
+        FizzData = new FizzData(currentMaxFizzValue, currentExcitement, fizzLaunchForce);
         ActionDataCollider.actionData = new PlayerActionData(FizzData, currentPlayerState, isGrounded);
         #endregion
 
@@ -363,19 +363,19 @@ public class MainCharacterController : MonoBehaviour
     public void ReceiveFizzData(FizzData incData)
     {
         Debug.Log("Received fizz data. Current stats are :");
-        Debug.Log("Fizz: " + currentFizzValue.ToString());
+        Debug.Log("Fizz: " + currentMaxFizzValue.ToString());
         switch (incData.behaviour)
         {
             case FizzDataBehaviour.Readonly:
                 break;
             case FizzDataBehaviour.Increment:
-                currentFizzValue += incData.currentFizzValue;
+                currentMaxFizzValue += incData.currentMaxFizzValue;
                 break;
             default:
                 break;
         }
         Debug.Log("Updated Fizz Data. New stats are :");
-        Debug.Log("Fizz: " + currentFizzValue.ToString());
+        Debug.Log("Fizz: " + currentMaxFizzValue.ToString());
     }
     private void OnDrawGizmos()
     {
