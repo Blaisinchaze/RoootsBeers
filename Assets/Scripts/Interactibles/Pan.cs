@@ -7,10 +7,13 @@ public class Pan : Interactible
     [SerializeField] private ParticleSystem fireFX;
 
     [SerializeField] GameObject collectibleReward;
+
+    public LadyNPCController Lady;
     protected override void Behaviour(PlayerActionData playerData)
     {
         fireFX.Stop();
         collectibleReward.SetActive(true);
+        Lady.UnPanic();
     }
 
     private void Start()
