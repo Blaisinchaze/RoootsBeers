@@ -13,9 +13,7 @@ public enum InteractibleTrigger
 public abstract class Interactible : MonoBehaviour
 {
     [Header("Interactible Components")]
-    [SerializeField] private Animation idleAnimation;
-    [SerializeField] private Animation interactibleAnimation;
-    [SerializeField] private Animation TriggeredAnimation;
+    [SerializeField] private Animator animator;
 
     [SerializeField] private InteractibleCollider playerDetectionCollider;
 
