@@ -1,21 +1,21 @@
 ﻿[System.Serializable]
 public struct FizzData
 {
-    
-    float currentMaxFizzValue;
-    float currentFizzValue;
-    float maxExcitement;
-    float currentExcitement;
-    float fizzLaunchForce;
-    float fizzFillPercent;
+    public FizzDataBehaviour behaviour { get; private set; }
+    public float currentMaxFizzValue;
+    public float currentExcitement;
+    public float fizzLaunchForce;
 
-    public FizzData(float currentMaxFizzValue, float currentFizzValue, float maxExcitement, float currentExcitement, float fizzLaunchForce, float fizzFillPercent)
+    public FizzData(float currentFizzValue,float currentExcitement, float fizzLaunchForce, FizzDataBehaviour bhvr = FizzDataBehaviour.Readonly)
     {
-        this.currentMaxFizzValue = currentMaxFizzValue;
-        this.currentFizzValue = currentFizzValue;
-        this.maxExcitement = maxExcitement;
+        this.currentMaxFizzValue = currentFizzValue;
         this.currentExcitement = currentExcitement;
         this.fizzLaunchForce = fizzLaunchForce;
-        this.fizzFillPercent = fizzFillPercent;
+        this.behaviour = bhvr;
     }
+}
+public enum FizzDataBehaviour
+{
+   Readonly = 1,
+   Increment
 }

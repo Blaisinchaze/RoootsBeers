@@ -31,7 +31,7 @@ public class MenuButtons : MonoBehaviour
         }
 
         selectedOption = 1;
-        ChangeOption(false);
+        ChangeOption(true);
     }
 
     // Update is called once per frame
@@ -75,7 +75,7 @@ public class MenuButtons : MonoBehaviour
             if (targetIndex[i] == 0) { UpdateRenderers(i, buttonColour); }
             else { UpdateRenderers(i, new Color(buttonColour.r, buttonColour.g, buttonColour.b, buttonColour.a * GetAlphaForButton(targetIndex[i]))); }
 
-            if (Vector3.Distance(buttons[i].transform.localPosition, menuPositions[targetIndex[i]]) > 0.05f)
+            if (Vector3.Distance(buttons[i].transform.localPosition, menuPositions[targetIndex[i]]) > 0.0005f)
             { buttons[i].transform.localPosition = Vector3.Lerp(buttons[i].transform.localPosition, menuPositions[targetIndex[i]], buttonMoveSpeed * Time.deltaTime); }
 
             //buttons[i].transform.LookAt(Camera.main.transform.position, Vector3.up);
