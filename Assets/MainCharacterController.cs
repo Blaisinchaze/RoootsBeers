@@ -21,7 +21,7 @@ public class MainCharacterController : MonoBehaviour
     [SerializeField] Collider collider;
     public Rigidbody rb;
     public float groundMovementSpeed = 5f;
-    public ParticleSystem fizzPS;
+    public GameObject fizzPSParent;
     public Transform groundCheckTransform;
     public LayerMask ignoredColliders;
     public Animator playerAnimator;
@@ -55,6 +55,7 @@ public class MainCharacterController : MonoBehaviour
     [SerializeField]float currentFizzValue = 0f;
     float fizzFillPercent = 0.0f;
     bool initialLaunchBurst = false;
+    private Wobble wobbleRef;
     public FizzData FizzData;
 
     //Launch fizz propertie
@@ -87,6 +88,7 @@ public class MainCharacterController : MonoBehaviour
         currentFizzValue = currentMaxFizzValue;
         resetPosition = rb.transform.position;
         resetRotation = rb.transform.rotation;
+        wobbleRef = GetComponentInChildren<Wobble>();
 
     }
 
@@ -113,6 +115,7 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIRBORNE:
                 {
+                    fizzPSParent.SetActive(true);
                     rb.constraints = RigidbodyConstraints.None;
                     currentExcitement = 0f;
                     initialLaunchBurst = true;
@@ -123,6 +126,7 @@ public class MainCharacterController : MonoBehaviour
                     rb.constraints = RigidbodyConstraints.FreezeAll;
                     rb.useGravity = false;
                     collider.enabled = false;
+                    playerAnimator.SetBool("Aiming", true);
                 }
                 break;
             default:
@@ -141,17 +145,19 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIRBORNE:
                 {
-
+                    fizzPSParent.SetActive(false);
                 }
                 break;
             case PlayerStates.AIMING:
                 {
+
                     if (toState == PlayerStates.AIRBORNE)
                     {
                         rb.useGravity = false;
                         isLaunching = true;
                     }
                     collider.enabled = true;
+                    playerAnimator.SetBool("Aiming", false);
                 }
                 break;
             default:
@@ -169,7 +175,6 @@ public class MainCharacterController : MonoBehaviour
             case PlayerStates.GROUNDED:
                 {
                     playerAnimator.SetBool("Moving", groundMoveDirection.sqrMagnitude > 0);
-                    Debug.Log("Movement Vector magnitude: " + groundMoveDirection.sqrMagnitude);
                     if (requestedAim && isGrounded)
                     {
                         TransitionToState(PlayerStates.AIMING);
@@ -220,6 +225,7 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIMING:
                 {
+
                     //Switch camera
 
 
@@ -260,23 +266,14 @@ public class MainCharacterController : MonoBehaviour
         #region STATE INDEPENDANT LOGIC
 
         //Handling fizz particle and fizz recharge based on current state
-        if (!isLaunching)
+        if (!isLaunching && isGrounded)
         {
-            fizzPS.Stop();
-            if (isGrounded)
-            {
                 currentFizzValue += Time.deltaTime * 10;
-
-            }
         }
 
-        if (isLaunching && currentFizzValue > 0)
+        if (isLaunching && currentFizzValue > 0 && !infiniteFizz)
         {
-            fizzPS.Play();
-            if (!infiniteFizz)
-            {
                 currentFizzValue -= Time.deltaTime * fizzBurnPerSecond;
-            }
         }
 
         //Checking whether player is touching the ground
@@ -296,6 +293,7 @@ public class MainCharacterController : MonoBehaviour
         currentExcitement = Mathf.Clamp(currentExcitement, 0.0f, maxExcitement);
         currentFizzValue = Mathf.Clamp(currentFizzValue, 0.0f, currentMaxFizzValue);
         currentMaxFizzValue = Mathf.Clamp(currentMaxFizzValue, 0, maxPossibleFizzValue);
+        wobbleRef.updateBottleFill(currentMaxFizzValue);
 
 
 

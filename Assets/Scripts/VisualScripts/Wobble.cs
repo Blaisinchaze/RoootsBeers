@@ -43,6 +43,7 @@ public class Wobble : MonoBehaviour
         rend.material.SetFloat("_WobbleX", wobbleAmountX);
         rend.material.SetFloat("_WobbleZ", wobbleAmountZ);
 
+
         if(parentBody != null)
         {
             angleAmount = Mathf.Max(parentBody.transform.rotation.eulerAngles.x / 180, parentBody.transform.rotation.eulerAngles.z / 180);
@@ -69,6 +70,12 @@ public class Wobble : MonoBehaviour
         // keep last position
         lastPos = transform.position;
         lastRot = transform.rotation.eulerAngles;
+    }
+
+    public void updateBottleFill(float currentFillValue)
+    {
+        rend.material.SetFloat("_Fill", currentFillValue);
+        Debug.Log("Fill adjustedto: " + currentFillValue);
     }
 
 
