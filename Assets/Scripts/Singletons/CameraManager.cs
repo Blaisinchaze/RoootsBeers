@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraManager : Singleton<CameraManager>
+public class CameraManager : NonPersistantSingleton<CameraManager>
 {
     public CinemachineVirtualCamera vCam;
     public List<CameraSequence> sequences;
