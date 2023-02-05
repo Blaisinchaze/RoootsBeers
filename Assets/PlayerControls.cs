@@ -53,6 +53,24 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugRestart"",
+                    ""type"": ""Button"",
+                    ""id"": ""6e958416-65cb-43dc-88b5-c236df91fb2c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugFizzMeter"",
+                    ""type"": ""Button"",
+                    ""id"": ""39d70b34-d65c-40d6-9b62-81d62adffcd5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -234,17 +252,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Fire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""886e731e-7071-4ae4-95c0-e61739dad6fd"",
                     ""path"": ""<Touchscreen>/primaryTouch/tap"",
                     ""interactions"": """",
@@ -275,6 +282,61 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ef657f78-fd8d-42da-860a-c3d3b3527555"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee637d79-667a-4935-80dc-33e069dee372"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""DebugRestart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""7baf6f8a-1897-4a9a-a504-02cffad375f9"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugFizzMeter"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""e4e53d1e-e656-4110-ad82-de217cc42203"",
+                    ""path"": ""<Keyboard>/numpadPlus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""DebugFizzMeter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""5b6a6cbb-ed00-402b-af54-4cd0d25d66cd"",
+                    ""path"": ""<Keyboard>/numpadMinus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""DebugFizzMeter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -863,6 +925,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_DebugRestart = m_Player.FindAction("DebugRestart", throwIfNotFound: true);
+        m_Player_DebugFizzMeter = m_Player.FindAction("DebugFizzMeter", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -937,6 +1001,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_DebugRestart;
+    private readonly InputAction m_Player_DebugFizzMeter;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -944,6 +1010,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @DebugRestart => m_Wrapper.m_Player_DebugRestart;
+        public InputAction @DebugFizzMeter => m_Wrapper.m_Player_DebugFizzMeter;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -962,6 +1030,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @DebugRestart.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugRestart;
+                @DebugRestart.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugRestart;
+                @DebugRestart.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugRestart;
+                @DebugFizzMeter.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugFizzMeter;
+                @DebugFizzMeter.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugFizzMeter;
+                @DebugFizzMeter.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugFizzMeter;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -975,6 +1049,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @DebugRestart.started += instance.OnDebugRestart;
+                @DebugRestart.performed += instance.OnDebugRestart;
+                @DebugRestart.canceled += instance.OnDebugRestart;
+                @DebugFizzMeter.started += instance.OnDebugFizzMeter;
+                @DebugFizzMeter.performed += instance.OnDebugFizzMeter;
+                @DebugFizzMeter.canceled += instance.OnDebugFizzMeter;
             }
         }
     }
@@ -1134,6 +1214,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnDebugRestart(InputAction.CallbackContext context);
+        void OnDebugFizzMeter(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
