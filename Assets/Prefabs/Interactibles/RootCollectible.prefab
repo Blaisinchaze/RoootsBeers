@@ -308,6 +308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6978129920176052717}
   - component: {fileID: 1019962174177885011}
+  - component: {fileID: -2424766017824277289}
   m_Layer: 0
   m_Name: RootCollectible
   m_TagString: Untagged

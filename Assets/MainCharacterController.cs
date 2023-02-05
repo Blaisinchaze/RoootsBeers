@@ -451,9 +451,11 @@ public class MainCharacterController : MonoBehaviour
                 break;
             default:
                 break;
+
         }
-        Debug.Log("Updated Fizz Data. New stats are :");
-        Debug.Log("Fizz: " + currentMaxFizzValue.ToString());
+        AudioClip clip = SFX_Soundbank.instance.CollectPickup[UnityEngine.Random.Range(0, SFX_Soundbank.instance.CollectPickup.Count)];
+        BottleOpeningSource.PlayOneShot(clip);
+        
     }
     private void OnDrawGizmos()
     {

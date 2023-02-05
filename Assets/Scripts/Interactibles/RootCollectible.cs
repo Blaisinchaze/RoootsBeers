@@ -1,5 +1,8 @@
-﻿public class RootCollectible : Collectible
+﻿using UnityEngine;
+
+public class RootCollectible : Collectible
 {
+    public AudioSource pickupSoundSource;
     protected override void Behaviour(PlayerActionData playerData)
     {
         var fizzIncrease = new FizzData(collectibleValue,0,0, FizzDataBehaviour.Increment);

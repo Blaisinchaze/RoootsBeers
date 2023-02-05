@@ -12,6 +12,7 @@ public class SFX_Soundbank : MonoBehaviour
     public List<AudioClip> WoodFootsteps;
     public List<AudioClip> BottleClinks;
     public List<AudioClip> SloshingLiquid;
+    public List<AudioClip> CollectPickup;
 
     private void Awake()
     {
