@@ -13,8 +13,11 @@ public class InteractibleCollider : MonoBehaviour
 
         if (!other.TryGetComponent<PlayerActionCollider>(out var actionCol)) return;
         if (triggerRequirement == InteractibleTrigger.Proximity)
+        {
             Hit();
-        switch (actionCol.actionData.State)
+            return;
+        }
+            switch (actionCol.actionData.State)
         {
             case PlayerStates.GROUNDED:
                 break;
