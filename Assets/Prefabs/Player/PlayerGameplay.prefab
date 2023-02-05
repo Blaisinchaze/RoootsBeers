@@ -173,7 +173,7 @@ MonoBehaviour:
   collider: {fileID: 804435207}
   rb: {fileID: 8555291508463439831}
   groundMovementSpeed: 5
-  fizzPS: {fileID: 0}
+  fizzPSParent: {fileID: 8318456140075725336}
   groundCheckTransform: {fileID: 8555291508379956337}
   ignoredColliders:
     serializedVersion: 2
@@ -524,6 +524,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8555291508463439828}
     m_Modifications:
+    - target: {fileID: 417593991901189669, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 451622027693169918, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
         type: 3}
       propertyPath: m_Layer
@@ -537,12 +542,12 @@ PrefabInstance:
     - target: {fileID: 1857899631655115651, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
         type: 3}
       propertyPath: playOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2007312939333964456, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
         type: 3}
       propertyPath: playOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2474252197275677773, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
         type: 3}
@@ -731,6 +736,12 @@ Animator:
 --- !u!4 &5319243413809136097 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4569816613201962460, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
+    type: 3}
+  m_PrefabInstance: {fileID: 8555291508859397181}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8318456140075725336 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 417593991901189669, guid: 6a4c5870ae90ccc46ab600cdd3f554f2,
     type: 3}
   m_PrefabInstance: {fileID: 8555291508859397181}
   m_PrefabAsset: {fileID: 0}

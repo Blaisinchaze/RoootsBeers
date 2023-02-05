@@ -75,7 +75,6 @@ public class Wobble : MonoBehaviour
     public void updateBottleFill(float currentFillValue)
     {
         rend.material.SetFloat("_Fill", currentFillValue);
-        Debug.Log("Fill adjustedto: " + currentFillValue);
     }
 
 
