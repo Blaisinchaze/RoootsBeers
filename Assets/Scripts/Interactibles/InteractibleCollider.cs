@@ -23,6 +23,7 @@ public class InteractibleCollider : MonoBehaviour
             case PlayerStates.GROUNDED:
                 break;
             case PlayerStates.AIRBORNE:
+                Debug.Log("State is " + actionCol.actionData.State.ToString());
                 if (triggerRequirement == InteractibleTrigger.HitByPlayer)
                     Hit();
                 break;
