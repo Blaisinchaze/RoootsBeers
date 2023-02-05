@@ -117,7 +117,7 @@ public class MainCharacterController : MonoBehaviour
             case PlayerStates.GROUNDED:
                 {
                     rb.constraints = RigidbodyConstraints.None;
-                    rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                    rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY;
                     rb.useGravity = true;
                 }
                 break;
