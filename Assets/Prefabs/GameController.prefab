@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2851034810550514208}
   - component: {fileID: 9102993448301106064}
+  - component: {fileID: 5997102838823698486}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -46,3 +47,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
   playerObj: {fileID: 0}
+--- !u!114 &5997102838823698486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7697262957651142379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f00ce0ee8f92bbe4091213ecfed2956c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FizzSFX:
+  - {fileID: 8300000, guid: 31470445e36904149b4755c48145179f, type: 3}
+  - {fileID: 8300000, guid: 31470445e36904149b4755c48145179f, type: 3}
+  BottleOpening:
+  - {fileID: 8300000, guid: b6f59403a61621e48a1c40349b4ea177, type: 3}
+  - {fileID: 8300000, guid: a16af8bac367c8141afc8880220f1319, type: 3}
+  CarpetFootsteps: []
+  WoodFootsteps: []
+  BottleClinks:
+  - {fileID: 8300000, guid: 845b3b2aa250a0143a9d2bfc55f00939, type: 3}
+  - {fileID: 8300000, guid: 9ba7e868db2d3d8409379721f317105e, type: 3}
+  - {fileID: 8300000, guid: 444db77cf0050f54481a6f684dca0267, type: 3}
+  SloshingLiquid:
+  - {fileID: 8300000, guid: fc1ac91c03b38cc4184a4ae9decd9b9f, type: 3}
+  - {fileID: 8300000, guid: e0d48b5e018d35749ade01ee941f5dcf, type: 3}
+  - {fileID: 8300000, guid: 8bfa35e8fb665a047a42a41125ba4a78, type: 3}
+  - {fileID: 8300000, guid: c11e4d7c0948b1a4ab9f3be2669edefc, type: 3}
+  - {fileID: 8300000, guid: c7207793c82ca234d9eaef349375d132, type: 3}
