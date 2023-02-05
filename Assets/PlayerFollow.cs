@@ -15,6 +15,7 @@ public class PlayerFollow : MonoBehaviour
         transform.position = Player.position;
 
         Vector3 rotationValue = (inputDelta * Time.deltaTime * rotationSpeed);
+        rotationValue.x = Mathf.Clamp(rotationValue.x, 0, 45f);
         Debug.Log("the rotation value: " + rotationValue);
         transform.Rotate(rotationValue);
     }

@@ -154,6 +154,7 @@ public class MainCharacterController : MonoBehaviour
             case PlayerStates.AIRBORNE:
                 {
                     fizzPSParent.SetActive(false);
+                    rb.transform.rotation = resetRotation;
                 }
                 break;
             case PlayerStates.AIMING:
