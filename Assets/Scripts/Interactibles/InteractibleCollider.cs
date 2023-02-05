@@ -36,6 +36,7 @@ public class InteractibleCollider : MonoBehaviour
         {
             OnPlayerEnterTrigger?.Invoke(actionCol.actionData);
 
+
         }
 
     }
