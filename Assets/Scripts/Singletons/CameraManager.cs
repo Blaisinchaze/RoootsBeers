@@ -10,6 +10,8 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
     public List<CameraSequence> sequences;
 
     public CameraSequence activeSequence;
+    public delegate void OnSequenceComplete();
+    private OnSequenceComplete onSequenceComplete;
 
     public Transform lookPoint;
     public Transform camPoint;
@@ -31,7 +33,7 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
         timer = 0;
     }
 
-    public void ActivateSequence(CameraSequence seq)
+    public void ActivateSequence(CameraSequence seq, OnSequenceComplete callbackOnComplete = null)
     {
         if (seq == null) return;
 
@@ -43,6 +45,8 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
         vCam.LookAt = lookPoint;
         vCam.Follow = camPoint;
 
+        if (callbackOnComplete is not null)
+            onSequenceComplete = callbackOnComplete;
         timer = 0;
     }
 
@@ -54,8 +58,12 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
             if (timer >= activeSequence.duration + activeSequence.timeBeforeExit) 
             {
                 if (activeSequence.followOnSequence != null) ActivateSequence(activeSequence.followOnSequence);
-                else ReturnToDefault();
-
+                else
+                {
+                    onSequenceComplete?.Invoke();
+                    if (onSequenceComplete is not null) onSequenceComplete = null;
+                    ReturnToDefault();
+                }
                 return; 
             }
 
@@ -71,7 +79,6 @@ public class CameraManager : NonPersistantSingleton<CameraManager>
                 activeSequence.movementUnits);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha4)) ActivateCamera(3);
     }
 
     private void ReturnToDefault()

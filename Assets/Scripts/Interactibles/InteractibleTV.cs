@@ -9,10 +9,17 @@ public class InteractibleTV : Interactible
     protected override void Behaviour(PlayerActionData playerData)
     {
         if (playerData.State != PlayerStates.AIRBORNE) return;
-        if (!CameraManager.Instance.sequences.Exists(seq => seq == onFinishCameraSequence)) return;
+        CameraManager.Instance.ActivateSequence(onFinishCameraSequence, WakeUpDad);
+    }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha4)) CameraManager.Instance.ActivateSequence(onFinishCameraSequence);
 
-        var camIndex = CameraManager.Instance.sequences.FindIndex(0, CameraManager.Instance.sequences.Count - 1, seq => seq == onFinishCameraSequence);
-        CameraManager.Instance.ActivateCamera(camIndex);
+    }
+
+    private void WakeUpDad()
+    {
+
     }
 }
