@@ -110,7 +110,7 @@ MonoBehaviour:
   TriggeredAnimation: {fileID: 0}
   playerDetectionCollider: {fileID: 8761363645559979348}
   interactTrigger: 3
-  collectibleValue: 20
+  collectibleValue: 0.1
 --- !u!1 &8940463643525588313
 GameObject:
   m_ObjectHideFlags: 0
