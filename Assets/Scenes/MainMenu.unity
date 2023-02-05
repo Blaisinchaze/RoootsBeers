@@ -1581,6 +1581,9 @@ MonoBehaviour:
   timeBeforeExit: 0
   travelPath: {fileID: 803670525}
   aimingPath: {fileID: 1471853302}
+  aimingUnits: 2
+  movementUnits: 2
+  followOnSequence: {fileID: 0}
 --- !u!4 &380417531
 Transform:
   m_ObjectHideFlags: 0
@@ -2210,6 +2213,9 @@ MonoBehaviour:
   timeBeforeExit: 2
   travelPath: {fileID: 434406906}
   aimingPath: {fileID: 615589415}
+  aimingUnits: 2
+  movementUnits: 2
+  followOnSequence: {fileID: 0}
 --- !u!4 &531788594
 Transform:
   m_ObjectHideFlags: 0
@@ -2437,7 +2443,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 1887736984}
   m_Follow: {fileID: 1404747074}
   m_Lens:
-    FieldOfView: 60
+    FieldOfView: 40
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -3424,26 +3430,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a200b19ca1a9685429ed7e043c28e904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Resolution: 10
+  m_Resolution: 20
   m_Appearance:
     pathColor: {r: 0, g: 1, b: 0, a: 1}
     inactivePathColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     width: 0.2
-  m_Looped: 1
+  m_Looped: 0
   m_Waypoints:
-  - position: {x: 110.156334, y: 33.460693, z: -14.378734}
+  - position: {x: -6.959961, y: -5.347954, z: -8.041914}
     roll: 0
-  - position: {x: 113.863686, y: 6.449342, z: 62.013474}
+  - position: {x: -17.29583, y: 1.654535, z: 0.03203392}
     roll: 0
-  - position: {x: 25.096622, y: 3.9721885, z: 45.107445}
+  - position: {x: -25.84965, y: 1.364648, z: -0.6054944}
     roll: 0
-  - position: {x: -67.48555, y: 17.417429, z: 62.928055}
+  - position: {x: -26.52383, y: 1.681688, z: -8.99564}
     roll: 0
-  - position: {x: -81.51573, y: 9.3393, z: 11.893299}
+  - position: {x: -17.10307, y: 3.225973, z: -9.104615}
     roll: 0
-  - position: {x: -67.69561, y: -9.415484, z: -21.600925}
-    roll: 0
-  - position: {x: 14.785794, y: 13.856513, z: -20.730074}
+  - position: {x: -21.72599, y: 12.3772, z: -4.333497}
     roll: 0
 --- !u!1 &809235806
 GameObject:
@@ -8517,13 +8521,17 @@ MonoBehaviour:
     pathColor: {r: 0, g: 1, b: 0, a: 1}
     inactivePathColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     width: 0.2
-  m_Looped: 1
+  m_Looped: 0
   m_Waypoints:
-  - position: {x: 66.74528, y: -1.4428568, z: 29.107002}
+  - position: {x: -18.25192, y: 1.654535, z: -1.123077}
     roll: 0
-  - position: {x: -43.207695, y: 10.027073, z: 23.956831}
+  - position: {x: -24.93023, y: 1.364648, z: -1.25657}
     roll: 0
-  - position: {x: 25.143898, y: -11.02742, z: 25.172642}
+  - position: {x: -25.1444, y: 1.681688, z: -8.057794}
+    roll: 0
+  - position: {x: -17.99311, y: 3.225973, z: -8.669625}
+    roll: 0
+  - position: {x: -21.72599, y: 4.615628, z: -4.333497}
     roll: 0
 --- !u!4 &1471853303
 Transform:
@@ -9097,6 +9105,9 @@ MonoBehaviour:
   timeBeforeExit: 2
   travelPath: {fileID: 1726739239}
   aimingPath: {fileID: 1262906494}
+  aimingUnits: 2
+  movementUnits: 2
+  followOnSequence: {fileID: 0}
 --- !u!4 &1537044807
 Transform:
   m_ObjectHideFlags: 0
@@ -11217,7 +11228,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: CameraTestScene
+          m_StringArgument: GameLevel
           m_BoolArgument: 0
         m_CallState: 2
   - m_PersistentCalls:
@@ -11235,7 +11246,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: CameraTestScene
+          m_StringArgument: GameLevel
           m_BoolArgument: 0
         m_CallState: 2
   - m_PersistentCalls:
@@ -11249,7 +11260,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: SampleScene
+          m_StringArgument: GameLevel
           m_BoolArgument: 0
         m_CallState: 2
   - m_PersistentCalls:
