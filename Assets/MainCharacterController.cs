@@ -93,6 +93,7 @@ public class MainCharacterController : MonoBehaviour
     public AudioSource FizzLoopSource;
     public AudioSource BottleOpeningSource;
     public AudioSource SloshingSource;
+    public AudioSource LeadGuitarSource;
 
     //timers
     float sloshTimer = 0f;
@@ -137,6 +138,7 @@ public class MainCharacterController : MonoBehaviour
                     float bottleOpendelay = 0f;
 
                     BottleOpeningSource.clip = SFX_Soundbank.instance.BottleOpening[UnityEngine.Random.RandomRange(0, SFX_Soundbank.instance.BottleOpening.Count)];
+                    LeadGuitarSource.volume = 1f;
                     if (fromState == PlayerStates.GROUNDED)
                     {
                         isLaunching = true;
@@ -180,6 +182,7 @@ public class MainCharacterController : MonoBehaviour
             case PlayerStates.AIRBORNE:
                 {
                     FizzLoopSource.Stop();
+                    LeadGuitarSource.volume = 0f;
                     fizzPSParent.SetActive(false);
                     rb.transform.rotation = resetRotation;
                 }
