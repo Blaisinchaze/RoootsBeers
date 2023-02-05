@@ -1,4 +1,4 @@
-﻿public abstract class PlayerActionData
+﻿public class PlayerActionData
 {
     protected PlayerStates activeState;
     protected bool isGrounded;

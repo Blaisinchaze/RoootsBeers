@@ -12,24 +12,32 @@ public enum PlayerStates
 
 public class MainCharacterController : MonoBehaviour
 {
-
+    //Debug stuff & resetting player
     Vector3 resetPosition;
     Quaternion resetRotation;
     [SerializeField]bool enableFizzBurst = false;
-    Vector2 rawMovementInput;
-    Vector3 groundMoveDirection;
-    Vector3 lookDirection;
+
+    //Required elements
     [SerializeField] Collider collider;
     public Rigidbody rb;
     public float groundMovementSpeed = 5f;
-    PlayerStates currentPlayerState = PlayerStates.GROUNDED;
     public ParticleSystem fizzPS;
     public Transform groundCheckTransform;
     public LayerMask ignoredColliders;
+    public Animator playerAnimator;
 
 
-    [SerializeField]bool isGrounded = true;
-    public bool infiniteFizz = false;
+    //Input Controls
+    Vector2 rawMovementInput;
+    Vector3 groundMoveDirection;
+    Vector3 lookDirection;
+
+    PlayerStates currentPlayerState = PlayerStates.GROUNDED;
+
+    [SerializeField] private PlayerActionCollider ActionDataCollider;
+
+    bool isGrounded = true;
+    [SerializeField] bool infiniteFizz = false;
     bool isLaunching = false;
 
     //areal controls properties
@@ -160,6 +168,8 @@ public class MainCharacterController : MonoBehaviour
         {
             case PlayerStates.GROUNDED:
                 {
+                    playerAnimator.SetBool("Moving", groundMoveDirection.sqrMagnitude > 0);
+                    Debug.Log("Movement Vector magnitude: " + groundMoveDirection.sqrMagnitude);
                     if (requestedAim && isGrounded)
                     {
                         TransitionToState(PlayerStates.AIMING);
@@ -172,6 +182,7 @@ public class MainCharacterController : MonoBehaviour
                         if (groundMoveDirection.sqrMagnitude > 0)
                         {
                             currentExcitement += excitementBuildupRate * Time.deltaTime;
+
                         }
                     }
                     //excitement buildup after point of no return
@@ -270,6 +281,7 @@ public class MainCharacterController : MonoBehaviour
 
         //Checking whether player is touching the ground
         isGrounded = Physics.Raycast(groundCheckTransform.position, -Vector3.up, 0.5f, ignoredColliders);
+        playerAnimator.SetBool("IsGrounded", isGrounded);
         if (currentPlayerState == PlayerStates.AIRBORNE && isGrounded && !isLaunching)
         {
             TransitionToState(PlayerStates.GROUNDED);
@@ -287,9 +299,9 @@ public class MainCharacterController : MonoBehaviour
 
 
 
-
-        FizzData = new FizzData(currentMaxFizzValue, currentFizzValue, maxExcitement,
-        currentExcitement, fizzLaunchForce, fizzFillPercent);
+        playerAnimator.SetFloat("LiquidAmount", currentMaxFizzValue);
+        FizzData = new FizzData(currentMaxFizzValue, currentExcitement, fizzLaunchForce);
+        ActionDataCollider.actionData = new PlayerActionData(FizzData, currentPlayerState, isGrounded);
         #endregion
 
     }
@@ -348,7 +360,23 @@ public class MainCharacterController : MonoBehaviour
             rb.AddForce(rb.transform.up * fizzLaunchForce * launchStrengthCurve.Evaluate(curveEvaluationValue) * Time.fixedDeltaTime, ForceMode.Force);
         }
     }
-
+    public void ReceiveFizzData(FizzData incData)
+    {
+        Debug.Log("Received fizz data. Current stats are :");
+        Debug.Log("Fizz: " + currentMaxFizzValue.ToString());
+        switch (incData.behaviour)
+        {
+            case FizzDataBehaviour.Readonly:
+                break;
+            case FizzDataBehaviour.Increment:
+                currentMaxFizzValue += incData.currentMaxFizzValue;
+                break;
+            default:
+                break;
+        }
+        Debug.Log("Updated Fizz Data. New stats are :");
+        Debug.Log("Fizz: " + currentMaxFizzValue.ToString());
+    }
     private void OnDrawGizmos()
     {
         Gizmos.DrawRay(groundCheckTransform.position, -Vector3.up * 0.5f);
