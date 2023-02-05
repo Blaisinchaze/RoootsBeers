@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public enum PlayerStates
 {
     GROUNDED,
@@ -37,13 +38,13 @@ public class MainCharacterController : MonoBehaviour
     Vector2 rawMouseDeltaInput;
     Camera mainCam;
 
-    PlayerStates currentPlayerState = PlayerStates.GROUNDED;
+    public PlayerStates currentPlayerState = PlayerStates.GROUNDED;
 
     [SerializeField] private PlayerActionCollider ActionDataCollider;
 
     bool isGrounded = true;
     [SerializeField] bool infiniteFizz = false;
-    bool isLaunching = false;
+    public bool isLaunching = false;
 
     //areal controls properties
     [Header("Aerial properties")]
@@ -87,6 +88,16 @@ public class MainCharacterController : MonoBehaviour
     bool isAiming = false;
     float aimingExcitementBuildupRate = 0.5f;
 
+    [Space]
+    [Header("AUDIO PLAYERS")]
+    public AudioSource FizzLoopSource;
+    public AudioSource BottleOpeningSource;
+    public AudioSource SloshingSource;
+
+    //timers
+    float sloshTimer = 0f;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -123,7 +134,19 @@ public class MainCharacterController : MonoBehaviour
                 break;
             case PlayerStates.AIRBORNE:
                 {
+                    float bottleOpendelay = 0f;
+
+                    BottleOpeningSource.clip = SFX_Soundbank.instance.BottleOpening[UnityEngine.Random.RandomRange(0, SFX_Soundbank.instance.BottleOpening.Count)];
+                    if (fromState == PlayerStates.GROUNDED)
+                    {
+                        isLaunching = true;
+                        launchDir = Vector3.up;
+
+                    }
+                    BottleOpeningSource.Play();
+                    FizzLoopSource.PlayDelayed(bottleOpendelay);
                     fizzPSParent.SetActive(true);
+
                     rb.constraints = RigidbodyConstraints.None;
                     currentExcitement = 0f;
                     initialLaunchBurst = true;
@@ -148,11 +171,15 @@ public class MainCharacterController : MonoBehaviour
         {
             case PlayerStates.GROUNDED:
                 {
-
+                    if (toState == PlayerStates.AIRBORNE)
+                    {
+                        playerAnimator.Play("Launch");
+                    }
                 }
                 break;
             case PlayerStates.AIRBORNE:
                 {
+                    FizzLoopSource.Stop();
                     fizzPSParent.SetActive(false);
                     rb.transform.rotation = resetRotation;
                 }
@@ -165,7 +192,7 @@ public class MainCharacterController : MonoBehaviour
                         rb.useGravity = false;
                         launchDir = topLaunchPoint.up.normalized;
                         isLaunching = true;
-                        playerAnimator.Play("Launch");
+                        playerAnimator.Play("InAir");
                     }
                     collider.enabled = true;
                     playerAnimator.SetBool("Aiming", false);
@@ -213,6 +240,17 @@ public class MainCharacterController : MonoBehaviour
                         {
                             currentExcitement += excitementBuildupRate * 2 * Time.deltaTime;
                         }
+                    }
+
+                    if (groundMoveDirection.sqrMagnitude > 0)
+                    {
+                        if (sloshTimer >= 0.6f)
+                        {
+                            SloshingSource.clip = SFX_Soundbank.instance.SloshingLiquid[UnityEngine.Random.Range(0, SFX_Soundbank.instance.SloshingLiquid.Count)];
+                            SloshingSource.Play();
+                            sloshTimer = 0f;
+                        }
+
                     }
                     //Spontaneous burst after max excitement reached
                     if (currentExcitement >= maxExcitement)
@@ -314,6 +352,13 @@ public class MainCharacterController : MonoBehaviour
         playerAnimator.SetFloat("LiquidAmount", currentMaxFizzValue);
         FizzData = new FizzData(currentMaxFizzValue, currentExcitement, fizzLaunchForce);
         ActionDataCollider.actionData = new PlayerActionData(FizzData, currentPlayerState, isGrounded);
+
+        //updating timers
+        if (groundMoveDirection.magnitude > 0)
+        {
+            sloshTimer += Time.deltaTime;
+        }
+
         #endregion
 
     }
@@ -353,7 +398,7 @@ public class MainCharacterController : MonoBehaviour
     private void FixedUpdate()
     {
         //Player Movement when walking around
-        if (currentPlayerState == PlayerStates.GROUNDED && isGrounded)
+        if (currentPlayerState == PlayerStates.GROUNDED)
         {
             Vector3 inputRight = Vector3.Cross(lookDirection, Vector3.up).normalized;
             Vector3 reorientedInput = Vector3.Cross(Vector3.up, inputRight).normalized * groundMoveDirection.magnitude;
