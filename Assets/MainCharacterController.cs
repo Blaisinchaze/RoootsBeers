@@ -84,8 +84,8 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
     //Launch fizz properties
     [Space]
     [Header("Launch Fizz properties")]
-    [SerializeField] float fizzLaunchForce = 3f;
-    [SerializeField] float fizzBurstMultiplier = 3f;
+    [SerializeField] float burstLaunchForce = 3f;
+    [SerializeField] float fizzBurstMultiplier = 20f;
     [SerializeField] float fizzBurnPerSecond = 0.5f;
 
     //Liquid excitement properties
@@ -170,6 +170,8 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
                     //rb.constraints = RigidbodyConstraints.None;
                     currentExcitement = 0f;
                     initialLaunchBurst = true;
+
+                    Debug.Log(launchDir);
                 }
                 break;
             case PlayerStates.AIMING:
@@ -226,74 +228,6 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
     {
 
         #region STATE DEPENDANT LOGIC
-        //State changes
-        switch (currentPlayerState)
-        {
-            case PlayerStates.GROUNDED:
-                {
-
-                    //Update playerbody rotation
-                    //Vector3 smoothedLookInputDirection = Vector3.Slerp(rb.transform.rotation, lookDirection, 1 - Mathf.Exp(-10 * Time.deltaTime)).normalized;
-                    playerAnimator.SetBool("Moving", groundMoveDirection.sqrMagnitude > 0);
-                    if (requestedAim && isGrounded)
-                    {
-                        TransitionToState(PlayerStates.AIMING);
-                    }
-
-                    //excitement buildup before point of no return
-                    if (currentExcitement < excitementPointOfNoReturn)
-                    {
-
-                        if (groundMoveDirection.sqrMagnitude > 0)
-                        {
-                            currentExcitement += excitementBuildupRate * Time.deltaTime;
-
-                        }
-                    }
-                    //excitement buildup after point of no return
-                    else
-                    {
-                        currentExcitement += excitementBuildupRate * Time.deltaTime;
-
-                        if (groundMoveDirection.sqrMagnitude > 0)
-                        {
-                            currentExcitement += excitementBuildupRate * 2 * Time.deltaTime;
-                        }
-                    }
-
-                    if (groundMoveDirection.sqrMagnitude > 0)
-                    {
-                        if (sloshTimer >= 0.6f)
-                        {
-                            SloshingSource.clip = SFX_Soundbank.instance.SloshingLiquid[UnityEngine.Random.Range(0, SFX_Soundbank.instance.SloshingLiquid.Count)];
-                            SloshingSource.Play();
-                            sloshTimer = 0f;
-                        }
-
-                    }
-                    //Spontaneous burst after max excitement reached
-                    if (currentExcitement >= maxExcitement)
-                    {
-
-                        TransitionToState(PlayerStates.AIRBORNE);
-                    }
-
-                }
-                break;
-            case PlayerStates.AIRBORNE:
-                {
-                    if (currentFizzValue > 0)
-                    {
-                        isLaunching = true;
-                        rb.useGravity = false;
-                    }
-                    else
-                    {
-                        isLaunching = false;
-                        rb.useGravity = true;
-                    }
-                }
-                break;
             case PlayerStates.AIMING:
                 {
 
@@ -492,7 +426,6 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
             cameraPlanarDirection = Vector3.ProjectOnPlane(inputs.CameraRotation * Vector3.up, Motor.CharacterUp).normalized;
         }
         Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection,Motor.CharacterUp);
-        Debug.DrawRay(Camera.main.transform.position, cameraDirection.normalized, Color.red);
         switch (currentPlayerState)
         {
             case PlayerStates.GROUNDED:
@@ -513,7 +446,7 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
                 {
                     _aimReleased = true;
                 }
-                _lookInputVector = cameraPlanarDirection;
+                _lookInputVector = new Vector3(cameraDirection.x,cameraPlanarDirection.y,cameraDirection.z);
                 break;
             default:
                 break;
@@ -647,7 +580,7 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
         LeadGuitarSource.volume = currentExcitement;
         wobbleRef.updateBottleFill(currentMaxFizzValue);
         playerAnimator.SetFloat("LiquidAmount", currentMaxFizzValue);
-        FizzData = new FizzData(currentMaxFizzValue, currentExcitement, fizzLaunchForce);
+        FizzData = new FizzData(currentMaxFizzValue, currentExcitement, burstLaunchForce);
         ActionDataCollider.actionData = new PlayerActionData(FizzData, currentPlayerState, isGrounded);
 
         //updating timers
@@ -682,7 +615,7 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
                     if (_lookInputVector != Vector3.zero && OrientationSharpness > 0f)
                     {
                         // Smoothly interpolate from current to target look direction
-                        Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector, 1 - Mathf.Exp(-OrientationSharpness * 100f * deltaTime)).normalized;
+                        Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterUp, _lookInputVector, 1 - Mathf.Exp(-OrientationSharpness * 100f * deltaTime)).normalized;
 
                         // Set the current rotation (which will be used by the KinematicCharacterMotor)
                         currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
@@ -752,11 +685,16 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
                     if (currentFizzValue > 0)
                     {
                         //DO THE MATH FOR LAUNCH ARC STUPID
-                        targetMovementVelocity = launchDir.normalized * launchStrengthCurve.Evaluate(curveEvaluationValue) * 20f * deltaTime  + ;
-                        targetMovementVelocity += Gravity * deltaTime;
-                        currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-OrientationSharpness * deltaTime));
-                        currentVelocity += launchDir.normalized * launchStrengthCurve.Evaluate(curveEvaluationValue) * 20f * deltaTime;
-                        currentVelocity += Gravity * deltaTime;
+                        //targetMovementVelocity = launchDir.normalized * launchStrengthCurve.Evaluate(curveEvaluationValue) * 20f * deltaTime  + ;
+                        //targetMovementVelocity += Gravity * deltaTime;
+                        //currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-OrientationSharpness * deltaTime));
+                        if (initialLaunchBurst)
+                        {
+                            currentVelocity += launchDir.normalized * fizzBurstMultiplier * burstLaunchForce;
+                            Debug.Log("BURST");
+                            initialLaunchBurst = false;
+                        }
+                        currentVelocity += launchDir.normalized * launchStrengthCurve.Evaluate(curveEvaluationValue) * fizzBurstMultiplier * deltaTime;
                     }
                     else
                     {
@@ -837,6 +775,7 @@ public class MainCharacterController : MonoBehaviour , ICharacterController
                 }
                 break;
             case PlayerStates.AIRBORNE:
+                _internalVelocityAdd += velocity;
                 break;
             case PlayerStates.AIMING:
                 break;
